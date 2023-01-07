@@ -1,5 +1,3 @@
-import 'dart:async';
-
 import 'package:flutter/material.dart';
 
 class CartItem {
@@ -59,6 +57,30 @@ class Cart with ChangeNotifier {
 
   void removeItem(productId) {
     _items.remove(productId);
+    notifyListeners();
+  }
+
+  void removeSingleItem(productId) {
+    if (!_items.containsKey(productId)) {
+      return;
+    }
+    if (_items[productId]!.quantity > 1) {
+      _items.update(
+          productId,
+          (existingItem) => CartItem(
+                id: existingItem.id,
+                title: existingItem.title,
+                price: existingItem.price,
+                quantity: existingItem.quantity - 1,
+              ));
+    } else {
+      _items.remove(productId);
+    }
+    notifyListeners();
+  }
+
+  void clear() {
+    _items = {};
     notifyListeners();
   }
 }
